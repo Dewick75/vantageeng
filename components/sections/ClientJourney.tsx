@@ -101,7 +101,7 @@ export function ClientJourney() {
   const [activeStep, setActiveStep] = useState(0);
 
   return (
-    <section className="bg-on-background text-white py-20 md:py-28 select-none text-left relative overflow-hidden">
+    <section className="bg-surface-container-low dark:bg-vantage-navy/10 py-20 md:py-28 select-none text-left relative overflow-hidden border-b border-outline-variant/15">
       {/* Background visual accents */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-vantage-blue/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl"></div>
@@ -109,13 +109,13 @@ export function ClientJourney() {
       <div className="max-w-container-max mx-auto px-6 md:px-margin-desktop relative z-10">
         {/* Title */}
         <div className="mb-20 text-center animate-fadeIn">
-          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-vantage-blue bg-white/10 px-3.5 py-1.5 rounded-full inline-block mb-4">
+          <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-vantage-blue bg-vantage-blue/10 px-3.5 py-1.5 rounded-full inline-block mb-4">
             Ecosystem Lifecycle
           </span>
-          <h2 className="font-extrabold text-2xl md:text-4xl text-white mb-4 tracking-tight">
+          <h2 className="font-extrabold text-2xl md:text-4xl text-vantage-navy dark:text-white mb-4 tracking-tight">
             Integrated Client Journey
           </h2>
-          <p className="text-white/60 text-xs md:text-sm max-w-2xl mx-auto leading-relaxed">
+          <p className="text-on-surface-variant dark:text-white/60 text-xs md:text-sm max-w-2xl mx-auto leading-relaxed">
             See how a single corporate relationship creates simultaneous, compound value across all seven engineering divisions - securing deep operational retention and predictable uptime.
           </p>
         </div>
@@ -134,7 +134,7 @@ export function ClientJourney() {
                     className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-300 ${
                       isActive
                         ? "bg-vantage-blue border-l-4 border-white pl-3 text-white shadow-xl shadow-vantage-blue/20"
-                        : "bg-white/5 hover:bg-white/10 text-white/70 hover:text-white"
+                        : "bg-white dark:bg-white/5 border border-outline-variant/20 dark:border-white/10 text-charcoal-text/80 dark:text-white/70 hover:bg-surface-container-high dark:hover:bg-white/10 hover:text-charcoal-text dark:hover:text-white"
                     }`}
                   >
                     <span className="font-extrabold text-sm opacity-50">
@@ -158,11 +158,11 @@ export function ClientJourney() {
           </div>
 
           {/* Stepper Detail View (right side) */}
-          <div className="lg:col-span-7 bg-white/5 rounded-2xl border border-white/10 p-8 flex flex-col justify-between relative overflow-hidden shadow-2xl">
+          <div className="lg:col-span-7 bg-white dark:bg-vantage-navy/35 rounded-2xl border border-outline-variant/20 dark:border-white/10 p-8 flex flex-col justify-between relative overflow-hidden shadow-lg">
             <div className="absolute top-0 right-0 w-48 h-48 bg-vantage-blue/15 rounded-full blur-3xl"></div>
             
             <div className="animate-fadeIn">
-              <div className="flex justify-between items-start border-b border-white/10 pb-6 mb-6 gap-4">
+              <div className="flex justify-between items-start border-b border-outline-variant/15 dark:border-white/10 pb-6 mb-6 gap-4">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 bg-vantage-blue/20 border border-vantage-blue/30 rounded-xl flex items-center justify-center shrink-0">
                     <span className="material-symbols-outlined text-vantage-blue text-3xl font-bold">
@@ -170,7 +170,7 @@ export function ClientJourney() {
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg md:text-xl text-white font-montserrat tracking-tight">
+                    <h3 className="font-bold text-lg md:text-xl text-vantage-navy dark:text-white font-montserrat tracking-tight">
                       Step {journeyItems[activeStep].number}: {journeyItems[activeStep].division}
                     </h3>
                     <p className="text-xs text-vantage-blue font-semibold uppercase tracking-wider mt-1">
@@ -178,30 +178,30 @@ export function ClientJourney() {
                     </p>
                   </div>
                 </div>
-                <div className="bg-white/10 border border-white/20 px-3 py-1 rounded-full text-[9px] font-bold tracking-wider uppercase shrink-0 text-teal-400">
+                <div className="bg-vantage-blue/10 border border-vantage-blue/20 px-3 py-1 rounded-full text-[9px] font-bold tracking-wider uppercase shrink-0 text-vantage-blue dark:text-teal-400">
                   {journeyItems[activeStep].badge}
                 </div>
               </div>
 
               <div className="mb-8">
-                <p className="text-xs text-teal-400 font-bold uppercase tracking-widest mb-2.5">
+                <p className="text-xs text-vantage-blue dark:text-teal-400 font-bold uppercase tracking-widest mb-2.5">
                   Service Milestone
                 </p>
-                <h4 className="font-bold text-base md:text-lg text-white leading-snug">
+                <h4 className="font-bold text-base md:text-lg text-vantage-navy dark:text-white leading-snug">
                   {journeyItems[activeStep].service}
                 </h4>
               </div>
 
-              <p className="text-xs md:text-sm text-white/70 leading-relaxed">
+              <p className="text-xs md:text-sm text-on-surface-variant dark:text-white/70 leading-relaxed">
                 {journeyItems[activeStep].description}
               </p>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-white/10 text-white/40 text-[10px] tracking-wide flex justify-between items-center">
+            <div className="mt-8 pt-6 border-t border-outline-variant/15 dark:border-white/10 text-on-surface-variant/60 dark:text-white/40 text-[10px] tracking-wide flex justify-between items-center">
               <span>Vantage Compounding Value Journey</span>
               <Link
                 href={journeyItems[activeStep].href}
-                className="flex items-center gap-1 text-vantage-blue hover:text-white font-bold transition-colors cursor-pointer"
+                className="flex items-center gap-1 text-vantage-blue hover:text-vantage-blue/80 font-bold transition-colors cursor-pointer"
               >
                 Explore Division Specs
                 <span className="material-symbols-outlined text-xs">arrow_forward</span>
