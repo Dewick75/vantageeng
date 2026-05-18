@@ -135,6 +135,33 @@ export function Navbar({ onRequestQuote }: NavbarProps) {
     setActiveDivision,
   } = useNavbar();
 
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  React.useEffect(() => {
+    try {
+      const isDark = document.documentElement.classList.contains("dark");
+      setTheme(isDark ? "dark" : "light");
+    } catch (e) {
+      // Fallback
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    try {
+      if (theme === "light") {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+        setTheme("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+        setTheme("light");
+      }
+    } catch (e) {
+      // Fallback
+    }
+  };
+
   // Find active division data
   const currentDivision = divisions.find((d) => d.id === activeDivision) || divisions[1];
 
@@ -309,6 +336,17 @@ export function Navbar({ onRequestQuote }: NavbarProps) {
 
           {/* Action button */}
           <div className="flex items-center gap-3">
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="flex items-center justify-center w-9 h-9 text-charcoal-text dark:text-white rounded-full bg-surface-container-high dark:bg-white/10 hover:bg-surface-container-highest dark:hover:bg-white/20 transition-all cursor-pointer select-none active:scale-95 border border-outline-variant/10"
+              aria-label="Toggle theme"
+            >
+              <span className="material-symbols-outlined text-[18px] font-bold">
+                {theme === "dark" ? "light_mode" : "dark_mode"}
+              </span>
+            </button>
+
             <button
               onClick={onRequestQuote}
               className="hidden md:inline-flex bg-vantage-blue text-white px-5 py-2 rounded-full font-semibold text-xs hover:bg-vantage-blue/90 active:scale-95 transition-all items-center gap-2 shadow-lg shadow-vantage-blue/20"

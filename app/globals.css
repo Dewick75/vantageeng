@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f9f9f9;
   --foreground: #1a1c1c;
@@ -11,21 +13,6 @@
   --surface-container-highest: #e2e2e2;
   --charcoal-text: #191919;
   --on-surface-variant: #4c4546;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #001f29;
-    --foreground: #ffffff;
-    --surface: #001f29;
-    --surface-container-lowest: #002b3a;
-    --surface-container-low: #001921;
-    --surface-container: #00222e;
-    --surface-container-high: #002836;
-    --surface-container-highest: #002e3e;
-    --charcoal-text: #ffffff;
-    --on-surface-variant: #b0c4de;
-  }
 }
 
 .dark {
