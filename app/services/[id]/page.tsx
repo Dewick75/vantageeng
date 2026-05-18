@@ -61,14 +61,278 @@ export default function ServiceDetailPage() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
-  const handleDownloadBrochure = () => {
+  const handleDownloadBrochure = async () => {
     if (isDownloading || downloadSuccess) return;
     setIsDownloading(true);
-    setTimeout(() => {
-      setIsDownloading(false);
+
+    try {
+      const { jsPDF } = await import("jspdf");
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "pt",
+        format: "a4",
+      });
+
+      const pageWidth = doc.internal.pageSize.getWidth(); // 595.28
+      const pageHeight = doc.internal.pageSize.getHeight(); // 841.89
+      let y = 50;
+
+      // Helper function for page headers
+      const drawHeader = (pageNum: number) => {
+        // Top accent bar
+        doc.setFillColor(0, 102, 204); // Vantage Blue
+        doc.rect(0, 0, pageWidth, 15, "F");
+
+        // Brand Logo / Text
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(0, 31, 41); // Vantage Navy
+        doc.text("VANTAGE", 40, 45);
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(0, 102, 204); // Vantage Blue
+        doc.text("ENGINEERING", 40, 57);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(100, 100, 100);
+        doc.text("Precision Integrated Systems | Sri Lanka", 40, 70);
+
+        // Document Type
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(0, 31, 41);
+        doc.text("TECHNICAL DATASHEET & BROCHURE", pageWidth - 40, 48, { align: "right" });
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(120, 120, 120);
+        doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth - 40, 60, { align: "right" });
+
+        // Thin separator line
+        doc.setDrawColor(220, 220, 220);
+        doc.setLineWidth(1);
+        doc.line(40, 80, pageWidth - 40, 80);
+      };
+
+      // Helper function for page footers
+      const drawFooter = (pageNum: number, totalPagesPlaceholder: string) => {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+
+        // Separator line
+        doc.setDrawColor(230, 230, 230);
+        doc.line(40, pageHeight - 50, pageWidth - 40, pageHeight - 50);
+
+        doc.text("Vantage Engineering • info@vantage.lk • www.vantage.lk", 40, pageHeight - 35);
+        doc.text(`Page ${pageNum} of ${totalPagesPlaceholder}`, pageWidth - 40, pageHeight - 35, { align: "right" });
+      };
+
+      // Initialize Page 1
+      drawHeader(1);
+      y = 110;
+
+      // Badge / Category
+      doc.setFillColor(240, 244, 248);
+      doc.rect(40, y, 160, 20, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8);
+      doc.setTextColor(0, 102, 204);
+      doc.text(serviceData.badge.toUpperCase(), 50, y + 13);
+      y += 35;
+
+      // Main Service Title
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(22);
+      doc.setTextColor(0, 31, 41);
+      doc.text(serviceData.title, 40, y);
+      y += 25;
+
+      // Service Description
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(60, 60, 60);
+      const splitDesc = doc.splitTextToSize(serviceData.description, pageWidth - 80);
+      doc.text(splitDesc, 40, y);
+      y += splitDesc.length * 14 + 25;
+
+      // Divider
+      doc.setDrawColor(240, 240, 240);
+      doc.line(40, y, pageWidth - 40, y);
+      y += 20;
+
+      // Solutions Title
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.setTextColor(0, 102, 204);
+      doc.text("I. SPECIALIZED SOLUTIONS", 40, y);
+      y += 20;
+
+      // Loop through Specialized Solutions
+      for (const sol of serviceData.specializedSolutions) {
+        if (y > pageHeight - 120) {
+          doc.addPage();
+          drawHeader(doc.getNumberOfPages());
+          y = 110;
+        }
+
+        // Draw small bullet point
+        doc.setFillColor(0, 102, 204);
+        doc.circle(45, y + 4, 3, "F");
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(0, 31, 41);
+        doc.text(sol.title, 55, y + 7);
+        y += 15;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        doc.setTextColor(85, 85, 85);
+        const splitSolDesc = doc.splitTextToSize(sol.description, pageWidth - 100);
+        doc.text(splitSolDesc, 55, y);
+        y += splitSolDesc.length * 12 + 18;
+      }
+
+      y += 10;
+
+      // Capabilities Checklist Title
+      if (y > pageHeight - 140) {
+        doc.addPage();
+        drawHeader(doc.getNumberOfPages());
+        y = 110;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.setTextColor(0, 102, 204);
+      doc.text("II. KEY TECHNICAL CAPABILITIES", 40, y);
+      y += 15;
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(0, 31, 41);
+      doc.text(`Quality Standard: ${serviceData.qualityStandard}`, 40, y);
+      y += 20;
+
+      // Loop through Capabilities
+      for (const cap of serviceData.capabilities) {
+        if (y > pageHeight - 100) {
+          doc.addPage();
+          drawHeader(doc.getNumberOfPages());
+          y = 110;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(0, 31, 41);
+        doc.text(`•  ${cap.title}`, 45, y);
+        y += 13;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        doc.setTextColor(85, 85, 85);
+        const splitCapDesc = doc.splitTextToSize(cap.description, pageWidth - 100);
+        doc.text(splitCapDesc, 55, y);
+        y += splitCapDesc.length * 12 + 15;
+      }
+
+      y += 10;
+
+      // Detailed Specifications Catalog
+      if (serviceData.detailedCatalog && serviceData.detailedCatalog.length > 0) {
+        if (y > pageHeight - 160) {
+          doc.addPage();
+          drawHeader(doc.getNumberOfPages());
+          y = 110;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(13);
+        doc.setTextColor(0, 102, 204);
+        doc.text("III. DETAILED CATALOG & SPECIFICATIONS", 40, y);
+        y += 20;
+
+        for (const cat of serviceData.detailedCatalog) {
+          if (y > pageHeight - 120) {
+            doc.addPage();
+            drawHeader(doc.getNumberOfPages());
+            y = 110;
+          }
+
+          // Subcategory header with solid background
+          doc.setFillColor(240, 244, 248);
+          doc.rect(40, y, pageWidth - 80, 20, "F");
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(9);
+          doc.setTextColor(0, 31, 41);
+          doc.text(cat.title.toUpperCase(), 50, y + 14);
+          y += 30;
+
+          for (const item of cat.items) {
+            if (y > pageHeight - 100) {
+              doc.addPage();
+              drawHeader(doc.getNumberOfPages());
+              y = 110;
+
+              // Re-render subcategory header on new page for continuity
+              doc.setFillColor(240, 244, 248);
+              doc.rect(40, y, pageWidth - 80, 20, "F");
+              doc.setFont("helvetica", "bold");
+              doc.setFontSize(9);
+              doc.setTextColor(0, 31, 41);
+              doc.text(`${cat.title.toUpperCase()} (CONTINUED)`, 50, y + 14);
+              y += 30;
+            }
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(9);
+            doc.setTextColor(60, 60, 60);
+
+            // If there is a colon, make the first part bold
+            const parts = item.split(": ");
+            if (parts.length > 1) {
+              const boldPart = parts[0] + ": ";
+              const restPart = parts.slice(1).join(": ");
+
+              doc.setFont("helvetica", "bold");
+              doc.text(`-  ${boldPart}`, 45, y);
+              const boldWidth = doc.getTextWidth(`-  ${boldPart}`);
+
+              doc.setFont("helvetica", "normal");
+              const splitRest = doc.splitTextToSize(restPart, pageWidth - 85 - boldWidth);
+              doc.text(splitRest, 45 + boldWidth, y);
+              y += splitRest.length * 12 + 8;
+            } else {
+              const splitItem = doc.splitTextToSize(`-  ${item}`, pageWidth - 90);
+              doc.text(splitItem, 45, y);
+              y += splitItem.length * 12 + 8;
+            }
+          }
+          y += 15;
+        }
+      }
+
+      // Add footers and replace total page numbers
+      const totalPages = doc.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        drawFooter(i, totalPages.toString());
+      }
+
+      // Save File
+      const sanitizedTitle = serviceData.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      doc.save(`vantage-brochure-${sanitizedTitle}.pdf`);
+
       setDownloadSuccess(true);
       setTimeout(() => setDownloadSuccess(false), 3000);
-    }, 2000);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
